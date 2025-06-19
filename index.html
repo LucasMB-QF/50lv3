@@ -406,7 +406,7 @@
             line-height: 1.6;
         }
         
-        /* PDF Viewer - MODIFICADO PARA MOSTRAR LA PÁGINA COMPLETA */
+        /* PDF Viewer - SOLUCIÓN DEFINITIVA */
         .viewer-container {
             position: fixed;
             top: 0;
@@ -467,18 +467,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto; /* Permite desplazamiento si el contenido es muy grande */
+            overflow: auto;
         }
         
-        /* IMPORTANTE: Cambios en el visor PDF */
+        /* Contenedor flexible para el PDF */
+        .pdf-container {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
         .pdf-viewer {
-            width: 100%; /* Ocupa todo el ancho disponible */
-            max-width: 100%; /* Evita desbordamiento horizontal */
-            height: 100%; /* Ocupa toda la altura disponible */
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
             border: none;
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
-            /* Se eliminó la propiedad zoom */
         }
         
         /* Notification */
@@ -568,6 +576,11 @@
             .footer-text {
                 text-align: center;
             }
+            
+            /* Ajustes para móviles */
+            .pdf-viewer {
+                min-height: 400px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -581,6 +594,11 @@
             
             .document-actions {
                 flex-direction: column;
+            }
+            
+            /* Ajustes para móviles pequeños */
+            .pdf-viewer {
+                min-height: 300px;
             }
         }
     </style>
@@ -687,7 +705,9 @@
             </button>
         </div>
         <div class="viewer-content">
-            <iframe class="pdf-viewer" id="pdf-viewer" src=""></iframe>
+            <div class="pdf-container">
+                <iframe class="pdf-viewer" id="pdf-viewer" src=""></iframe>
+            </div>
         </div>
     </div>
     
@@ -828,14 +848,28 @@
             return icons[type] || '<i class="far fa-file"></i>';
         }
         
-        // Visualizar documento - MODIFICADO PARA MOSTRAR LA PÁGINA COMPLETA
+        // Visualizar documento - SOLUCIÓN DEFINITIVA
         function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
                 // URL de vista previa de Google Drive para PDFs - MOSTRAR PÁGINA COMPLETA
-                const url = `https://drive.google.com/file/d/${id}/preview#view=fit`;
+                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH`;
                 pdfViewer.src = url;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
+                
+                // Forzar redimensionamiento después de cargar el PDF
+                setTimeout(() => {
+                    // Crear un nuevo iframe para forzar la recarga con parámetros actualizados
+                    const newIframe = document.createElement('iframe');
+                    newIframe.className = 'pdf-viewer';
+                    newIframe.src = url;
+                    newIframe.id = 'pdf-viewer';
+                    
+                    // Reemplazar el iframe existente
+                    const container = document.querySelector('.pdf-container');
+                    const oldIframe = document.getElementById('pdf-viewer');
+                    container.replaceChild(newIframe, oldIframe);
+                }, 100);
             } else if (type === 'xlsm' && previewLink) {
                 // Abrir archivos Excel en nueva pestaña con el visor de Drive
                 window.open(previewLink, '_blank');
