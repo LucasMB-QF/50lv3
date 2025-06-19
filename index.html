@@ -413,7 +413,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             z-index: 1000;
@@ -439,6 +439,10 @@
             font-size: 1.1rem;
             color: white;
             font-weight: 500;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .close-viewer {
@@ -461,64 +465,13 @@
             background: #c53030;
         }
         
-        .viewer-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: 20px;
-        }
-        
-        .zoom-control {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .zoom-control:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .zoom-display {
-            color: white;
-            font-size: 0.9rem;
-            min-width: 50px;
-            text-align: center;
-        }
-        
-        .fit-control {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: var(--transition);
-        }
-        
-        .fit-control:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
         .viewer-content {
             flex: 1;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
+            position: relative;
         }
         
         .pdf-viewer {
@@ -527,7 +480,89 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
-            transition: transform 0.2s ease;
+        }
+        
+        /* Viewer Controls */
+        .viewer-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 30, 30, 0.85);
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 0 10px;
+        }
+        
+        .zoom-value {
+            min-width: 50px;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .view-selector {
+            display: flex;
+            gap: 5px;
+            margin: 0 10px;
+        }
+        
+        .view-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        
+        .view-btn.active {
+            background: var(--primary-blue);
+        }
+        
+        .view-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .page-info {
+            color: white;
+            font-size: 0.9rem;
+            min-width: 120px;
+            text-align: center;
         }
         
         /* Notification */
@@ -619,18 +654,17 @@
             }
             
             .viewer-controls {
-                margin-left: 10px;
+                bottom: 10px;
+                padding: 8px 15px;
+                gap: 10px;
             }
             
-            .zoom-control {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
+            .view-selector {
+                display: none;
             }
             
-            .fit-control {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+            .page-info {
+                min-width: 90px;
             }
         }
         
@@ -647,17 +681,20 @@
                 flex-direction: column;
             }
             
-            .viewer-header {
-                flex-wrap: wrap;
-                gap: 10px;
-                padding: 10px 15px;
+            .viewer-controls {
+                width: 90%;
+                justify-content: space-between;
+                gap: 5px;
             }
             
-            .viewer-controls {
-                margin-left: 0;
-                margin-top: 10px;
-                width: 100%;
-                justify-content: center;
+            .control-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .zoom-value {
+                min-width: 40px;
             }
         }
     </style>
@@ -759,27 +796,41 @@
     <div class="viewer-container" id="pdf-viewer-container">
         <div class="viewer-header">
             <div class="viewer-title" id="viewer-title">Documento.pdf</div>
-            <div class="viewer-controls">
-                <button class="zoom-control" id="zoom-out" title="Alejar">
-                    <i class="fas fa-search-minus"></i>
-                </button>
-                <span class="zoom-display" id="zoom-display">100%</span>
-                <button class="zoom-control" id="zoom-in" title="Acercar">
-                    <i class="fas fa-search-plus"></i>
-                </button>
-                <button class="fit-control" id="fit-to-page" title="Ajustar a página">
-                    <i class="fas fa-expand-arrows-alt"></i> Ajustar a página
-                </button>
-                <button class="fit-control" id="fit-to-width" title="Ajustar a ancho">
-                    <i class="fas fa-arrows-alt-h"></i> Ajustar a ancho
-                </button>
-            </div>
-            <button class="close-viewer" id="close-viewer" title="Cerrar visor">
+            <button class="close-viewer" id="close-viewer">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="viewer-content">
             <iframe class="pdf-viewer" id="pdf-viewer" src=""></iframe>
+            
+            <!-- Controles del visor PDF -->
+            <div class="viewer-controls" id="viewer-controls">
+                <button class="control-btn" id="prev-page">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="zoom-controls">
+                    <button class="control-btn" id="zoom-out">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <div class="zoom-value" id="zoom-value">100%</div>
+                    <button class="control-btn" id="zoom-in">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                </div>
+                
+                <div class="view-selector">
+                    <button class="view-btn active" data-view="single">Página única</button>
+                    <button class="view-btn" data-view="double">Dos páginas</button>
+                    <button class="view-btn" data-view="width">Ancho completo</button>
+                </div>
+                
+                <button class="control-btn" id="next-page">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <div class="page-info" id="page-info">Página 1 de 1</div>
+            </div>
         </div>
     </div>
     
@@ -847,16 +898,12 @@
         const closeViewer = document.getElementById('close-viewer');
         const viewerTitle = document.getElementById('viewer-title');
         const notification = document.getElementById('notification');
-        const zoomInBtn = document.getElementById('zoom-in');
-        const zoomOutBtn = document.getElementById('zoom-out');
-        const zoomDisplay = document.getElementById('zoom-display');
-        const fitToPageBtn = document.getElementById('fit-to-page');
-        const fitToWidthBtn = document.getElementById('fit-to-width');
         
-        // Variables para control de zoom
+        // Variables para controles del visor PDF
         let currentZoom = 100;
-        let isFitToWidth = false;
-        let isFitToPage = false;
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentView = 'single';
         
         // Manejar clic en categorías
         categoryCards.forEach(card => {
@@ -939,12 +986,15 @@
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
                 
-                // Resetear zoom y ajuste
+                // Reiniciar controles
                 currentZoom = 100;
-                zoomDisplay.textContent = `${currentZoom}%`;
-                isFitToWidth = false;
-                isFitToPage = false;
-                pdfViewer.style.transform = `scale(${currentZoom / 100})`;
+                currentPage = 1;
+                document.getElementById('zoom-value').textContent = `${currentZoom}%`;
+                
+                // Simular detección de páginas (en realidad necesitaríamos la API de PDF.js para esto)
+                setTimeout(() => {
+                    document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages}`;
+                }, 1000);
             } else if (type === 'xlsm' && previewLink) {
                 // Abrir archivos Excel en nueva pestaña con el visor de Drive
                 window.open(previewLink, '_blank');
@@ -992,48 +1042,66 @@
             }
         });
         
-        // Control de zoom
-        zoomInBtn.addEventListener('click', () => {
-            currentZoom += 25;
-            if (currentZoom > 200) currentZoom = 200;
-            pdfViewer.style.transform = `scale(${currentZoom / 100})`;
-            zoomDisplay.textContent = `${currentZoom}%`;
-            isFitToWidth = false;
-            isFitToPage = false;
-        });
-        
-        zoomOutBtn.addEventListener('click', () => {
-            currentZoom -= 25;
-            if (currentZoom < 50) currentZoom = 50;
-            pdfViewer.style.transform = `scale(${currentZoom / 100})`;
-            zoomDisplay.textContent = `${currentZoom}%`;
-            isFitToWidth = false;
-            isFitToPage = false;
-        });
-        
-        // Ajustar a página
-        fitToPageBtn.addEventListener('click', () => {
-            isFitToPage = true;
-            isFitToWidth = false;
-            pdfViewer.style.transform = '';
-            zoomDisplay.textContent = 'Ajustado';
-        });
-        
-        // Ajustar a ancho
-        fitToWidthBtn.addEventListener('click', () => {
-            isFitToWidth = true;
-            isFitToPage = false;
-            pdfViewer.style.transform = '';
-            zoomDisplay.textContent = 'Ajustado';
-        });
-        
         // Inicializar con DQ
         window.onload = function() {
             loadDocuments('dq');
             currentCategory.textContent = 'Documentos de Calificación de Diseño';
             // Activar el botón DQ por defecto
             document.querySelector('.category-card[data-category="dq"]').classList.add('active');
+            
+            // Configurar controles del visor PDF
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                if (currentZoom < 200) {
+                    currentZoom += 10;
+                    document.getElementById('zoom-value').textContent = `${currentZoom}%`;
+                    updateViewerZoom();
+                }
+            });
+            
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                if (currentZoom > 50) {
+                    currentZoom -= 10;
+                    document.getElementById('zoom-value').textContent = `${currentZoom}%`;
+                    updateViewerZoom();
+                }
+            });
+            
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages}`;
+                    // Aquí normalmente iría la navegación real entre páginas
+                }
+            });
+            
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages}`;
+                    // Aquí normalmente iría la navegación real entre páginas
+                }
+            });
+            
+            // Configurar botones de vista
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentView = this.getAttribute('data-view');
+                    updateViewerZoom();
+                });
+            });
         };
+        
+        // Actualizar zoom del visor
+        function updateViewerZoom() {
+            // Para una implementación real necesitaríamos PDF.js
+            // Esto es solo una simulación para mostrar el concepto
+            
+            // En una implementación real usaríamos:
+            // pdfViewer.style.transform = `scale(${currentZoom/100})`;
+            // Y ajustaríamos el viewport según el modo de vista (single, double, width)
+        }
     </script>
 </body>
 </html>
