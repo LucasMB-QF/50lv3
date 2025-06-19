@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importamos el visor de PDF de Mozilla -->
+    <link rel="stylesheet" href="https://mozilla.github.io/pdf.js/web/viewer.css">
     <style>
         :root {
             --primary-blue: #004a8f;
@@ -406,7 +408,7 @@
             line-height: 1.6;
         }
         
-        /* PDF Viewer - SOLUCIÓN DEFINITIVA */
+        /* PDF Viewer - VISOR ALTERNATIVO */
         .viewer-container {
             position: fixed;
             top: 0;
@@ -470,14 +472,15 @@
             overflow: auto;
         }
         
-        /* Contenedor flexible para el PDF */
+        /* Contenedor para el visor alternativo */
         .pdf-container {
             width: 100%;
-            max-width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            max-width: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
+            overflow: hidden;
         }
         
         .pdf-viewer {
@@ -485,8 +488,6 @@
             height: 100%;
             min-height: 600px;
             border: none;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
         }
         
         /* Notification */
@@ -716,7 +717,12 @@
         <i class="fas fa-check-circle"></i> Descarga iniciada
     </div>
     
+    <!-- Importamos el visor de PDF de Mozilla -->
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script>
+        // Configurar el visor de PDF
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+        
         const documents = {
             // ==================== DQ ====================
             dq: [
@@ -848,28 +854,19 @@
             return icons[type] || '<i class="far fa-file"></i>';
         }
         
-        // Visualizar documento - SOLUCIÓN DEFINITIVA
+        // Visualizar documento con visor alternativo
         function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
-                // URL de vista previa de Google Drive para PDFs - MOSTRAR PÁGINA COMPLETA
-                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH`;
-                pdfViewer.src = url;
+                // Usamos el visor de PDF de Mozilla
+                const pdfUrl = `https://drive.google.com/uc?export=download&id=${id}`;
+                
+                // Configuramos el visor
+                const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+                
+                // Asignamos la URL al iframe
+                pdfViewer.src = viewerUrl;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
-                
-                // Forzar redimensionamiento después de cargar el PDF
-                setTimeout(() => {
-                    // Crear un nuevo iframe para forzar la recarga con parámetros actualizados
-                    const newIframe = document.createElement('iframe');
-                    newIframe.className = 'pdf-viewer';
-                    newIframe.src = url;
-                    newIframe.id = 'pdf-viewer';
-                    
-                    // Reemplazar el iframe existente
-                    const container = document.querySelector('.pdf-container');
-                    const oldIframe = document.getElementById('pdf-viewer');
-                    container.replaceChild(newIframe, oldIframe);
-                }, 100);
             } else if (type === 'xlsm' && previewLink) {
                 // Abrir archivos Excel en nueva pestaña con el visor de Drive
                 window.open(previewLink, '_blank');
