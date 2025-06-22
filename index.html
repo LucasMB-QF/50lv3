@@ -621,12 +621,12 @@
                 <img src="https://transfarma.cl/wp-content/uploads/2024/06/logo-transfarma-vec.png" alt="Transfarma Logo">
                 <div>
                     <div class="company-name">TRANSFARMA</div>
-                    <div class="company-tagline">Soluciones farmacéuticas integrales</div>
+                    <div class="company-tagline">Logística farmacéutica</div>
                 </div>
             </div>
             <div class="contact-info">
                 <div><i class="fas fa-phone-alt"></i> +56 2 2345 6789</div>
-                <div><i class="fas fa-envelope"></i> info@transfarma.cl</div>
+                <div><i class="fas fa-envelope"></i> pasantes@transfarma.cl</div>
             </div>
         </div>
     </header>
@@ -701,7 +701,7 @@
             </div>
             <div class="footer-text">
                 <p>Sistema de Gestión Documental &copy; 2025 | Lucas Miralles Bahamonde</p>
-                <p>Av. Providencia 1234, Santiago, Chile</p>
+                <p>Av. Américo Vespucio 1385, Santiago, Chile</p>
             </div>
         </div>
     </footer>
@@ -860,7 +860,7 @@
         function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
                 // URL de vista previa de Google Drive para PDFs con zoom al 85%
-                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=85`;
+                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=75`;
                 pdfViewer.src = url;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
