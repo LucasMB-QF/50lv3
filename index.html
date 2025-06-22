@@ -7,16 +7,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Calibri:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Fuentes */
         :root {
+            --font-primary: 'Century Gothic', Calibri, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-secondary: Calibri, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Variables modo claro */
+        :root, [data-theme="light"] {
+            --primary-green: #8BC540;
+            --primary-blue: #003C88;
+            --secondary-gray: #5E5E5E;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e0e6ed;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --success: #38a169;
+            --warning: #ecc94b;
+            --danger: #e53e3e;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --card-shadow: 0 6px 15px rgba(0, 60, 136, 0.1);
+            --bg-primary: linear-gradient(135deg, #f8fafc, #f0f5f9);
+            --bg-header: white;
+            --bg-card: white;
+            --card-border: var(--medium-gray);
+            --text-primary: var(--text-dark);
+            --text-secondary: var(--secondary-gray);
+            --text-muted: var(--text-light);
+            --highlight-bg: rgba(139, 197, 64, 0.1);
+            --icon-bg: rgba(0, 60, 136, 0.1);
+            --footer-bg: var(--primary-blue);
+            --footer-text: white;
+            --toggle-icon: '\f186'; /* moon */
+        }
+        
+        /* Variables modo oscuro */
+        [data-theme="dark"] {
             --primary-green: #8BC540;
             --primary-blue: #4d8ff2;
             --secondary-blue: #003C88;
-            --dark-bg: #121826;
-            --card-bg: #1a2236;
+            --bg-primary: #121826;
+            --bg-header: #1a2236;
+            --bg-card: #1a2236;
             --card-border: #2a3550;
-            --text-light: #e0e9ff;
+            --text-primary: #e0e9ff;
+            --text-secondary: #8a9bb8;
             --text-muted: #8a9bb8;
             --success: #38a169;
             --warning: #ecc94b;
@@ -24,23 +62,29 @@
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s ease;
             --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            --highlight-bg: rgba(139, 197, 64, 0.15);
+            --icon-bg: rgba(0, 60, 136, 0.2);
+            --footer-bg: var(--bg-header);
+            --footer-text: var(--text-secondary);
+            --toggle-icon: '\f185'; /* sun */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(13, 60, 136, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 197, 64, 0.1) 0%, transparent 20%);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-primary);
         }
         
         body {
-            background: var(--dark-bg);
-            color: var(--text-light);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 0;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(13, 60, 136, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(139, 197, 64, 0.1) 0%, transparent 20%);
+            transition: var(--transition);
         }
         
         .container {
@@ -51,10 +95,11 @@
         
         /* Header Styles */
         .company-header {
-            background: var(--card-bg);
+            background: var(--bg-header);
             padding: 15px 0;
             box-shadow: var(--shadow);
             border-bottom: 3px solid var(--primary-green);
+            transition: var(--transition);
         }
         
         .header-container {
@@ -75,19 +120,22 @@
         .logo-container img {
             height: 50px;
             filter: brightness(0.9);
+            transition: var(--transition);
         }
         
         .company-name {
             font-size: 1.6rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-primary);
             letter-spacing: 0.5px;
+            transition: var(--transition);
         }
         
         .company-tagline {
             font-size: 1rem;
             color: var(--text-muted);
             font-weight: 400;
+            transition: var(--transition);
         }
         
         .contact-info {
@@ -96,6 +144,7 @@
             gap: 5px;
             color: var(--text-muted);
             font-size: 0.9rem;
+            transition: var(--transition);
         }
         
         .contact-info div {
@@ -122,11 +171,12 @@
         .page-title {
             font-size: 2.2rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-primary);
             margin-bottom: 15px;
             position: relative;
             display: inline-block;
             padding-bottom: 10px;
+            transition: var(--transition);
         }
         
         .page-title::after {
@@ -139,6 +189,7 @@
             height: 4px;
             background: var(--primary-green);
             border-radius: 2px;
+            transition: var(--transition);
         }
         
         .page-subtitle {
@@ -147,10 +198,11 @@
             max-width: 800px;
             margin: 0 auto 25px;
             line-height: 1.6;
+            transition: var(--transition);
         }
         
         .highlight-box {
-            background: rgba(139, 197, 64, 0.15);
+            background: var(--highlight-bg);
             border-left: 4px solid var(--primary-green);
             padding: 15px 20px;
             border-radius: 0 8px 8px 0;
@@ -158,6 +210,7 @@
             margin: 0 auto;
             font-size: 0.95rem;
             color: var(--text-muted);
+            transition: var(--transition);
         }
         
         .highlight-box i {
@@ -175,7 +228,7 @@
         }
         
         .category-card {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: 12px;
             padding: 30px 25px;
             width: 280px;
@@ -190,19 +243,19 @@
         
         .category-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
             border-color: var(--primary-green);
         }
         
         .category-card.active {
             border-color: var(--primary-green);
-            background: linear-gradient(to bottom, var(--card-bg), rgba(139, 197, 64, 0.15));
+            background: linear-gradient(to bottom, var(--bg-card), rgba(139, 197, 64, 0.05));
         }
         
         .category-icon {
             width: 80px;
             height: 80px;
-            background: rgba(0, 60, 136, 0.2);
+            background: var(--icon-bg);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -221,14 +274,16 @@
         .category-title {
             font-size: 1.4rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-primary);
             margin-bottom: 10px;
+            transition: var(--transition);
         }
         
         .category-description {
             color: var(--text-muted);
             font-size: 0.95rem;
             line-height: 1.5;
+            transition: var(--transition);
         }
         
         .category-badge {
@@ -241,17 +296,19 @@
             font-weight: 600;
             padding: 3px 10px;
             border-radius: 20px;
+            transition: var(--transition);
         }
         
         /* Documents Container */
         .documents-container {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: 15px;
             padding: 30px;
             box-shadow: var(--card-shadow);
             margin-top: 20px;
             border: 1px solid var(--card-border);
             border-top: 4px solid var(--primary-blue);
+            transition: var(--transition);
         }
         
         .section-header {
@@ -259,13 +316,13 @@
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 60, 136, 0.2);
+            border-bottom: 2px solid var(--icon-bg);
         }
         
         .section-icon {
             width: 50px;
             height: 50px;
-            background: rgba(0, 60, 136, 0.2);
+            background: var(--icon-bg);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -273,18 +330,21 @@
             margin-right: 15px;
             font-size: 1.5rem;
             color: var(--primary-blue);
+            transition: var(--transition);
         }
         
         .section-title {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--text-light);
+            color: var(--text-primary);
+            transition: var(--transition);
         }
         
         .section-subtitle {
             font-size: 1rem;
             color: var(--text-muted);
             margin-top: 5px;
+            transition: var(--transition);
         }
         
         .documents-grid {
@@ -294,7 +354,7 @@
         }
         
         .document-card {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: 10px;
             padding: 20px;
             transition: var(--transition);
@@ -309,7 +369,7 @@
         
         .document-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
             border-color: var(--primary-green);
         }
         
@@ -322,7 +382,7 @@
         .document-icon {
             width: 50px;
             height: 50px;
-            background: rgba(0, 60, 136, 0.2);
+            background: var(--icon-bg);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -331,10 +391,11 @@
             color: var(--primary-blue);
             flex-shrink: 0;
             margin-right: 15px;
+            transition: var(--transition);
         }
         
         .excel-icon {
-            background: rgba(139, 197, 64, 0.2);
+            background: rgba(139, 197, 64, 0.1);
             color: var(--primary-green);
         }
         
@@ -345,9 +406,10 @@
         .document-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-light);
+            color: var(--text-primary);
             margin-bottom: 5px;
             line-height: 1.4;
+            transition: var(--transition);
         }
         
         .document-meta {
@@ -356,6 +418,7 @@
             font-size: 0.85rem;
             gap: 15px;
             flex-wrap: wrap;
+            transition: var(--transition);
         }
         
         .document-meta span {
@@ -403,12 +466,12 @@
         
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             opacity: 0.9;
         }
         
         .btn-view:hover {
-            background: #3a7de0;
+            background: #002a5c;
         }
         
         .btn-download:hover {
@@ -426,7 +489,7 @@
         .empty-state i {
             font-size: 3.5rem;
             margin-bottom: 20px;
-            color: rgba(0, 60, 136, 0.2);
+            color: var(--icon-bg);
         }
         
         .empty-state p {
@@ -442,7 +505,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 15, 25, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             z-index: 1000;
@@ -458,7 +521,7 @@
         
         .viewer-header {
             padding: 15px 25px;
-            background: rgba(20, 30, 50, 0.95);
+            background: rgba(30, 30, 30, 0.95);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -521,7 +584,7 @@
             color: white;
             padding: 15px 25px;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s ease;
@@ -538,11 +601,11 @@
         
         /* Footer */
         .footer {
-            background: var(--card-bg);
-            color: var(--text-muted);
+            background: var(--footer-bg);
+            color: var(--footer-text);
             padding: 25px 0;
             margin-top: 40px;
-            border-top: 1px solid var(--card-border);
+            transition: var(--transition);
         }
         
         .footer-container {
@@ -557,11 +620,13 @@
         .footer-logo img {
             height: 40px;
             filter: brightness(0.8);
+            transition: var(--transition);
         }
         
         .footer-text {
             font-size: 0.9rem;
             text-align: right;
+            color: var(--footer-text);
         }
         
         .footer-text p {
@@ -575,7 +640,7 @@
             left: 20px;
             width: 50px;
             height: 50px;
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -584,8 +649,15 @@
             z-index: 1000;
             box-shadow: var(--shadow);
             border: 1px solid var(--card-border);
-            color: var(--text-light);
+            color: var(--text-primary);
             font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .theme-toggle::before {
+            content: var(--toggle-icon);
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
         }
         
         /* Responsive Design */
@@ -671,7 +743,7 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
     <!-- Company Header -->
     <header class="company-header">
         <div class="header-container">
@@ -783,9 +855,7 @@
     </div>
     
     <!-- Theme Toggle -->
-    <div class="theme-toggle" id="theme-toggle">
-        <i class="fas fa-moon"></i>
-    </div>
+    <div class="theme-toggle" id="theme-toggle"></div>
     
     <script>
         const documents = {
@@ -847,6 +917,7 @@
         const viewerTitle = document.getElementById('viewer-title');
         const notification = document.getElementById('notification');
         const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
         
         // Manejar clic en categorías
         categoryCards.forEach(card => {
@@ -975,8 +1046,25 @@
             }
         });
         
-        // Inicializar con DQ
+        // Cambiar tema
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            
+            // Guardar preferencia en localStorage
+            localStorage.setItem('theme', newTheme);
+        });
+        
+        // Cargar preferencia de tema
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+        }
+        
+        // Inicializar
         window.onload = function() {
+            loadTheme();
             loadDocuments('dq');
             currentCategory.textContent = 'Documentos de Calificación de Diseño';
             // Activar el botón DQ por defecto
