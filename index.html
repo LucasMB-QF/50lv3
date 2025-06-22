@@ -475,8 +475,8 @@
         }
         
         .pdf-viewer {
-            width: 50%; /* Reducido de 90% a 70% */
-            height: 70%; /* Ajustado de 90% a 85% */
+            width: 60%; /* Reducido de 90% a 70% */
+            height: 85%; /* Ajustado de 90% a 85% */
             border: none;
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
@@ -860,7 +860,7 @@
         function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
                 // URL de vista previa de Google Drive para PDFs con zoom al 85%
-                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=50`;
+                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=85`;
                 pdfViewer.src = url;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
