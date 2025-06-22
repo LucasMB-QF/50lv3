@@ -8,8 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- PDF.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <style>
         :root {
             --primary-blue: #004a8f;
@@ -408,7 +406,7 @@
             line-height: 1.6;
         }
         
-        /* PDF Viewer */
+        /* PDF Viewer - Modificado para ser más estrecho */
         .viewer-container {
             position: fixed;
             top: 0;
@@ -435,11 +433,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
         }
         
         .viewer-title {
             font-size: 1.1rem;
+            color: white;
             font-weight: 500;
             max-width: 70%;
             white-space: nowrap;
@@ -447,38 +445,25 @@
             text-overflow: ellipsis;
         }
         
-        .viewer-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .viewer-btn {
-            background: rgba(255, 255, 255, 0.1);
+        .close-viewer {
+            background: var(--danger);
             color: white;
             border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            font-size: 1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-        }
-        
-        .viewer-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .close-viewer {
-            background: var(--danger);
+            flex-shrink: 0;
         }
         
         .close-viewer:hover {
-            background: #c53030;
             transform: rotate(90deg);
+            background: #c53030;
         }
         
         .viewer-content {
@@ -487,31 +472,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
         }
         
-        .pdf-container {
-            width: 70%;
-            max-width: 900px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-        
-        #pdf-viewer {
-            width: 100%;
-            padding: 20px;
-        }
-        
-        .pdf-page {
-            margin-bottom: 20px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .pdf-page canvas {
-            width: 100% !important;
-            height: auto !important;
+        .pdf-viewer {
+            width: 70%; /* Reducido de 90% a 70% */
+            height: 85%; /* Ajustado de 90% a 85% */
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
+            zoom: 0.85; /* Aumentado de 0.75 a 0.85 */
         }
         
         /* Notification */
@@ -567,8 +536,9 @@
         
         /* Responsive Design */
         @media (max-width: 1200px) {
-            .pdf-container {
+            .pdf-viewer {
                 width: 80%;
+                height: 80%;
             }
         }
         
@@ -577,8 +547,9 @@
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
             
-            .pdf-container {
+            .pdf-viewer {
                 width: 90%;
+                height: 75%;
             }
         }
         
@@ -612,8 +583,9 @@
                 text-align: center;
             }
             
-            .pdf-container {
+            .pdf-viewer {
                 width: 95%;
+                height: 70%;
             }
             
             .viewer-title {
@@ -634,9 +606,9 @@
                 flex-direction: column;
             }
             
-            .pdf-container {
+            .pdf-viewer {
                 width: 98%;
-                padding: 5px;
+                height: 65%;
             }
         }
     </style>
@@ -738,22 +710,12 @@
     <div class="viewer-container" id="pdf-viewer-container">
         <div class="viewer-header">
             <div class="viewer-title" id="viewer-title">Documento.pdf</div>
-            <div class="viewer-controls">
-                <button class="viewer-btn" id="zoom-out">
-                    <i class="fas fa-search-minus"></i>
-                </button>
-                <button class="viewer-btn" id="zoom-in">
-                    <i class="fas fa-search-plus"></i>
-                </button>
-                <button class="viewer-btn close-viewer" id="close-viewer">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <button class="close-viewer" id="close-viewer">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="viewer-content">
-            <div class="pdf-container">
-                <div id="pdf-viewer"></div>
-            </div>
+            <iframe class="pdf-viewer" id="pdf-viewer" src=""></iframe>
         </div>
     </div>
     
@@ -763,9 +725,6 @@
     </div>
     
     <script>
-        // Configurar PDF.js
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
-
         const documents = {
             // ==================== DQ ====================
             dq: [
@@ -820,16 +779,11 @@
         const currentCategory = document.getElementById('current-category');
         const documentsGrid = document.getElementById('documents-grid');
         const pdfViewerContainer = document.getElementById('pdf-viewer-container');
-        const pdfViewerElement = document.getElementById('pdf-viewer');
+        const pdfViewer = document.getElementById('pdf-viewer');
         const closeViewer = document.getElementById('close-viewer');
         const viewerTitle = document.getElementById('viewer-title');
         const notification = document.getElementById('notification');
-        const zoomInBtn = document.getElementById('zoom-in');
-        const zoomOutBtn = document.getElementById('zoom-out');
         
-        let currentScale = 0.85; // Zoom inicial al 85%
-        let currentPdf = null;
-
         // Manejar clic en categorías
         categoryCards.forEach(card => {
             card.addEventListener('click', () => {
@@ -903,71 +857,20 @@
         }
         
         // Visualizar documento
-        async function viewDocument(id, name, type, previewLink = null) {
+        function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
+                // URL de vista previa de Google Drive para PDFs con zoom al 85%
+                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=85`;
+                pdfViewer.src = url;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
-                
-                // Mostrar loader
-                pdfViewerElement.innerHTML = '<div style="padding: 50px; text-align: center; color: #666;"><i class="fas fa-spinner fa-spin fa-3x"></i><p>Cargando documento...</p></div>';
-                
-                try {
-                    // Cargar PDF desde Google Drive
-                    const url = `https://drive.google.com/uc?export=download&id=${id}`;
-                    const loadingTask = pdfjsLib.getDocument(url);
-                    
-                    currentPdf = await loadingTask.promise;
-                    await renderPdf(currentPdf);
-                } catch (error) {
-                    console.error('Error al cargar PDF:', error);
-                    pdfViewerElement.innerHTML = '<div style="padding: 50px; text-align: center; color: #d33;"><i class="fas fa-exclamation-triangle fa-3x"></i><p>Error al cargar el documento</p></div>';
-                }
             } else if (type === 'xlsm' && previewLink) {
+                // Abrir archivos Excel en nueva pestaña con el visor de Drive
                 window.open(previewLink, '_blank');
             } else {
                 alert('La vista previa solo está disponible para documentos PDF. Por favor descargue el archivo para verlo.');
             }
         }
-
-        // Renderizar PDF con zoom controlable
-        async function renderPdf(pdf) {
-            pdfViewerElement.innerHTML = '';
-            
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const viewport = page.getViewport({ scale: currentScale });
-                
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                
-                const pageDiv = document.createElement('div');
-                pageDiv.className = 'pdf-page';
-                pageDiv.appendChild(canvas);
-                pdfViewerElement.appendChild(pageDiv);
-                
-                await page.render({
-                    canvasContext: context,
-                    viewport: viewport
-                }).promise;
-            }
-        }
-
-        // Controles de zoom
-        zoomInBtn.addEventListener('click', () => {
-            if (currentPdf) {
-                currentScale += 0.1;
-                renderPdf(currentPdf);
-            }
-        });
-
-        zoomOutBtn.addEventListener('click', () => {
-            if (currentPdf && currentScale > 0.2) {
-                currentScale -= 0.1;
-                renderPdf(currentPdf);
-            }
-        });
         
         // Descargar documento
         function downloadDocument(id, name) {
@@ -997,16 +900,14 @@
         // Cerrar visor PDF
         closeViewer.addEventListener('click', () => {
             pdfViewerContainer.classList.remove('active');
-            pdfViewerElement.innerHTML = '';
-            currentPdf = null;
+            pdfViewer.src = '';
         });
         
         // Cerrar visor al hacer clic fuera del contenido
         pdfViewerContainer.addEventListener('click', (e) => {
             if (e.target === pdfViewerContainer) {
                 pdfViewerContainer.classList.remove('active');
-                pdfViewerElement.innerHTML = '';
-                currentPdf = null;
+                pdfViewer.src = '';
             }
         });
         
