@@ -860,7 +860,7 @@
         function viewDocument(id, name, type, previewLink = null) {
             if (type === 'pdf') {
                 // URL de vista previa de Google Drive para PDFs con zoom al 85%
-                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=75`;
+                const url = `https://drive.google.com/file/d/${id}/preview#view=fitH&zoom=50`;
                 pdfViewer.src = url;
                 viewerTitle.textContent = name;
                 pdfViewerContainer.classList.add('active');
